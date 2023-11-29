@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock AI </title>
+    <!-- <script src="/js/live.js"></script> -->
+</head>
+
+<body>
+    <div class="container">
+        <h1>Stock AI</h1>
+        <label for="stock">Enter Stock:</label><br>
+        <input type="text" id="stock" placeholder="Ex. GOOGL">
+        <div class="btn">Predict ►</div>
+        <p>Made With ❤️ By <a href="https://sancho1952007.github.io/">Sancho Godinho</a></p>
+        <p><b>Invest On Your Own Risk.</b><br>
+            <b>We Are Not Responsible For Any Profit/Loss On Your Purchased Stocks!</b>
+        </p>
+        <div class="result">
+            <div class="section">
+                Positives: <div class="pos"></div>
+            </div>
+            <div class="section">
+                Negatives: <div class="neg"></div>
+            </div>
+            <div class="section">
+                Best Option: <div class="best-option"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&display=swap');
+
+    body {
+        width: 100%;
+        height: 100vh;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-family: 'Barlow', sans-serif;
+    }
+
+    .container {
+        width: calc(100% - 20px);
+        max-width: 300px;
+    }
+
+    .result {
+        width: 100%;
+        height: fit-content;
+        overflow: auto;
+        font-size: 20px;
+        margin-bottom: 10px;
+        display: none;
+    }
+
+    .result>* {
+        display: flex;
+        gap: 5px;
+    }
+
+    h1,
+    p {
+        text-align: center;
+    }
+
+    a {
+        all: unset;
+        color: blue;
+        cursor: pointer;
+    }
+
+    input {
+        width: calc(100% - 20px);
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid grey;
+        font-family: 'Barlow', sans-serif;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .btn {
+        width: calc(100% - 20px);
+        padding: 10px;
+        background-color: blueviolet;
+        color: white;
+        border-radius: 5px;
+        margin-top: 5px;
+        cursor: pointer;
+        user-select: none;
+        transition: all .10s linear;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn:active {
+        background-color: rgb(125, 39, 205);
+    }
+
+    .btn img {
+        width: 20px;
+    }
+
+    * {
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    @media screen and (max-height:310px) {
+        body {
+            justify-content: unset;
+        }
+    }
+</style>
+
+<script>
+    let request = false;
+    document.querySelector('.btn').onclick = async () => {
+        let stock = document.querySelector('#stock').value;
+        if (stock != null && stock.trim() != '') {
+            if (request == false) {
+                request = true;
+                document.querySelector('.btn').innerHTML = `Fetching News <img src="/images/loader.gif">`
+                document.querySelector('.btn').style.paddingTop = '10px';
+                document.querySelector('.btn').style.paddingBottom = '10px';
+                setTimeout(() => {
+                    document.querySelector('.btn').innerHTML = `Fetching Articles <img src="/images/loader.gif">`
+                }, 1000);
+
+                setTimeout(() => {
+                    document.querySelector('.btn').innerHTML = `AI Is Checking The Sentiments <img src="/images/loader.gif">`
+                }, 1000);
+
+                try {
+                    let data = await (await (await fetch('/get/' + stock)).json());
+                    document.querySelector('.btn').innerHTML = `Results Are Below!`;
+                    if (data.success == true) {
+                        document.querySelector('.result').style.display = 'block';
+                        document.querySelector('.pos').innerText = data.positive;
+                        document.querySelector('.neg').innerText = data.negative;
+                        document.querySelector('.best-option').innerText = data.best_option;
+                    } else {
+                        request = false;
+                        console.log(data);
+                        alert(data.error);
+                        document.querySelector('.btn').innerHTML = `Predict ►`;
+                    }
+                } catch (err) {
+                    request = false;
+                    console.error(err);
+                    alert('Sorry, Failed To Predict Stock!');
+                    document.querySelector('.btn').innerHTML = `Predict ►`;
+                }
+            }
+        }
+        else {
+            alert('Please Enter The Stock And Then Click On Predict!');
+        }
+    }
+</script>
+
+</html>
