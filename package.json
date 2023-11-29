@@ -1,5 +1,5 @@
 {
-  "name": "Stock AI",
+  "name": "stock-ai",
   "version": "1.0.50",
   "scripts": {
     "dev": "nodemon src/index.js",
