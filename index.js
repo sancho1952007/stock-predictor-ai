@@ -78,4 +78,4 @@ app.get("/get/:stock", async (req, res) => {
     }
 });
 
-app.listen(3000);
+app.listen(8080);
