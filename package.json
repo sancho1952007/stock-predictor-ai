@@ -2,8 +2,8 @@
   "name": "stock-ai",
   "version": "1.0.50",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "node run src/index.js"
+    "dev": "nodemon index.js",
+    "start": "node index.js"
   },
   "dependencies": {
     "axios": "^1.6.2",
